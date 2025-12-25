@@ -1,0 +1,22 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"*.code-workspace": true,
+			"**/.vs/": true,
+			"**/.vscode/": true,
+			"**/*.csproj": true
+		},
+		"editor.rulers": [
+			120
+		],
+		"files.trimFinalNewlines": true,
+		"files.trimTrailingWhitespace": true,
+		"files.eol": "\n",
+		"makefile.configureOnOpen": false
+	}
+}

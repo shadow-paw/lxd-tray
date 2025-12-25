@@ -1,0 +1,18 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Name": "shadow-paw"
+            }
+        ],
+        "Category": "Utilities",
+        "Name": "LXD Tray",
+        "Description": "LXD control on tray",
+        "Icon": "computer",
+        "Id": "org.shadow-paw.lxd-tray",
+        "Website": "https://github.com/shadow-paw/lxd-tray",
+        "BugReportUrl": "https://github.com/shadow-paw/lxd-tray/issues"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}
