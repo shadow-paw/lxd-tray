@@ -10,6 +10,7 @@ Item {
     id: root
     required property ListModel model
     required property bool loading
+    required property bool showMemory
     signal toggleInstance(string name, bool checked)
 
     PlasmaComponents3.BusyIndicator {
@@ -59,15 +60,15 @@ Item {
                         Layout.fillWidth: true
                         text: model.name
                     }
+                    PlasmaComponents3.Label {
+                        visible: root.showMemory && model.running
+                        font.pixelSize: 9
+                        text: model.memory
+                    }
                     PlasmaComponents3.BusyIndicator {
                         Layout.preferredWidth: 16
                         Layout.preferredHeight: 16
                         visible: model.updating
-                    }
-                    Item {
-                        Layout.preferredWidth: 16
-                        Layout.preferredHeight: 16
-                        visible: !model.updating
                     }
                     PlasmaComponents3.Switch {
                         checked: model.running

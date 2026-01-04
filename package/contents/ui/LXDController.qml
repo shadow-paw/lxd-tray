@@ -32,7 +32,7 @@ Plasma5Support.DataSource {
                     updating: updating,
                     running: running,
                     type: fields[2],
-                    memory: fields[3],
+                    memory: running && fields[3] ? fields[3].replace(/(\d+)\.?\d*([KMG])ib$/i, '$1$2') : "",
                 });
             }
             listing = false;
@@ -43,6 +43,9 @@ Plasma5Support.DataSource {
                 if (instances.get(i).name === name) {
                     instances.setProperty(i, "running", true);
                     instances.setProperty(i, "updating", false);
+                    // call list to query memory usage
+                    lxd.list();
+                    break;
                 }
             }
         } else if (source.startsWith("lxc stop ")) {
@@ -51,6 +54,7 @@ Plasma5Support.DataSource {
                 if (instances.get(i).name === name) {
                     instances.setProperty(i, "running", false);
                     instances.setProperty(i, "updating", false);
+                    break;
                 }
             }
         }
@@ -69,6 +73,7 @@ Plasma5Support.DataSource {
                 instances.setProperty(i, "updating", true);
                 // optimistic
                 instances.setProperty(i, "running", true);
+                instances.setProperty(i, "memory", "");
                 root.connectSource("lxc start " + name);
                 break;
             }
@@ -82,6 +87,7 @@ Plasma5Support.DataSource {
                 instances.setProperty(i, "updating", true);
                 // optimistic
                 instances.setProperty(i, "running", false);
+                instances.setProperty(i, "memory", "");
                 root.connectSource("lxc stop " + name);
                 break;
             }
