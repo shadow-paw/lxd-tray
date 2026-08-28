@@ -9,6 +9,11 @@ Plasma5Support.DataSource {
     property bool ready: false
     property bool listing: false
     property ListModel instances: ListModel{}
+    // Ranges of `instances` sharing a cluster location, as { location, start, count }.
+    // `instances` is sorted so that each location occupies one contiguous range.
+    property var groups: []
+    // More than one location means the cluster spreads the instances around.
+    readonly property bool grouped: groups.length > 1
 
     onNewData: function(source, data) {
         if (source.startsWith("lxc ls ")) {
@@ -20,21 +25,36 @@ Plasma5Support.DataSource {
                     updateingInstances.push(inst.name);
                 }
             }
-            instances.clear();
             const lines = data.stdout.split("\n").map(x => x.trim()).filter(x => x);
-            for (const line of lines) {
+            const parsed = lines.map(line => {
                 const fields = line.split(",");
                 const name = fields[0];
-                const updating = updateingInstances.includes(name);
                 const running = fields[1] === "RUNNING";
-                instances.append({
+                // standalone lxd reports the location as "none"
+                const location = fields[4] && fields[4].toLowerCase() !== "none" ? fields[4] : "";
+                return {
                     name: name,
-                    updating: updating,
+                    updating: updateingInstances.includes(name),
                     running: running,
                     type: fields[2],
                     memory: running && fields[3] ? fields[3].replace(/(\d+)\.?\d*([KMG])ib$/i, '$1$2') : "",
-                });
+                    location: location,
+                };
+            });
+            parsed.sort((a, b) => a.location.localeCompare(b.location) || a.name.localeCompare(b.name));
+
+            const newGroups = [];
+            instances.clear();
+            for (const inst of parsed) {
+                let group = newGroups[newGroups.length - 1];
+                if (!group || group.location !== inst.location) {
+                    group = { location: inst.location, start: instances.count, count: 0 };
+                    newGroups.push(group);
+                }
+                group.count += 1;
+                instances.append(inst);
             }
+            groups = newGroups;
             listing = false;
             ready = true;
         } else if (source.startsWith("lxc start ")) {
@@ -63,7 +83,7 @@ Plasma5Support.DataSource {
     function list() {
         if (listing) return;
         listing = true
-        root.connectSource("lxc ls -c nstm -f csv");
+        root.connectSource("lxc ls -c nstmL -f csv");
     }
     function start(name) {
         for (let i=0; i<instances.count; i++) {

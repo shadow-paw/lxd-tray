@@ -14,6 +14,8 @@ PlasmoidItem {
         Layout.minimumWidth: Kirigami.Units.gridUnit * 12
         Layout.minimumHeight: Kirigami.Units.gridUnit * 8
         model: lxd.instances
+        groups: lxd.groups
+        grouped: lxd.grouped
         loading: !lxd.ready
         showMemory: plasmoid.configuration.showMemory
         onToggleInstance: (name, checked) => checked ? lxd.start(name) : lxd.stop(name)
