@@ -41,7 +41,7 @@ Item {
             delegate: Rectangle {
                 width: grid.cellWidth
                 height: grid.cellHeight
-                color: index % 4 < 2 ? "#00000000" : Qt.hsla(PlasmaCore.Theme.highlightColor.hslHue, PlasmaCore.Theme.highlightColor.hslSaturation, PlasmaCore.Theme.highlightColor.hslLightness, 0.1)
+                color: index % 4 < 2 ? "#00000000" : Qt.rgba(Kirigami.Theme.highlightColor.r, Kirigami.Theme.highlightColor.g, Kirigami.Theme.highlightColor.b, 0.1)
                 topLeftRadius: index % 2 == 0 ? 8 : 0
                 bottomLeftRadius: index % 2 == 0 ? 8 : 0
                 topRightRadius: index % 2 == 1 ? 8 : 0
